@@ -95,127 +95,127 @@ local InfiniteJumpToggle = Tab:CreateToggle({
 
 
 Tab:CreateToggle({
-Name = "ESP Master (Highlight & Nametags)",
-CurrentValue = false,
-Flag = "EspMasterToggle",
-Callback = function(Value)
-if Value then
--- ==================== TOGGLE ON ====================
-HighlightFolder = Instance.new("Folder")
-HighlightFolder.Name = "Visuals_Folder"
-HighlightFolder.Parent = CoreGui
+   Name = "ESP Master (Highlight & Nametags)",
+   CurrentValue = false,
+   Flag = "EspMasterToggle",
+   Callback = function(Value)
+      if Value then
+         -- ==================== TOGGLE ON ====================
+         HighlightFolder = Instance.new("Folder")
+         HighlightFolder.Name = "Visuals_Folder"
+         -- FIXED: Changed Parent from CoreGui to PlayerGui to fix the callback error
+         HighlightFolder.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-     local function startESP(player)
-        if player == Players.LocalPlayer then return end
+         local function startESP(player)
+            if player == Players.LocalPlayer then return end
 
-        local function onCharacterAdded(character)
-           local head = character:WaitForChild("Head", 5)
-           
-           -- Safely clean up any duplicate instances on respawn
-           if HighlightFolder and HighlightFolder:FindFirstChild(player.Name) then 
-              HighlightFolder[player.Name]:Destroy() 
-           end
-           if head and head:FindFirstChild("OverheadNametag") then 
-              head.OverheadNametag:Destroy() 
-           end
+            local function onCharacterAdded(character)
+               local head = character:WaitForChild("Head", 5)
+               
+               -- Safely clean up any duplicate instances on respawn
+               if HighlightFolder and HighlightFolder:FindFirstChild(player.Name) then 
+                  HighlightFolder[player.Name]:Destroy() 
+               end
+               if head and head:FindFirstChild("OverheadNametag") then 
+                  head.OverheadNametag:Destroy() 
+               end
 
-           -- Render Wallhack Highlight (Chams)
-           local highlight = Instance.new("Highlight")
-           highlight.Name = player.Name
-           highlight.FillColor = Color3.fromRGB(255, 0, 0)
-           highlight.FillTransparency = 0.5
-           highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-           highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-           highlight.Adornee = character
-           highlight.Parent = HighlightFolder
+               -- Render Wallhack Highlight (Chams)
+               local highlight = Instance.new("Highlight")
+               highlight.Name = player.Name
+               highlight.FillColor = Color3.fromRGB(255, 0, 0)
+               highlight.FillTransparency = 0.5
+               highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+               highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+               highlight.Adornee = character
+               highlight.Parent = HighlightFolder
 
-           -- Render Rounded Overhead DisplayName Tag
-           if head then
-              local billboard = Instance.new("BillboardGui")
-              billboard.Name = "OverheadNametag"
-              billboard.Size = UDim2.new(0, 180, 0, 40)
-              billboard.StudsOffset = Vector3.new(0, 2.5, 0)
-              billboard.AlwaysOnTop = true
+               -- Render Rounded Overhead DisplayName Tag
+               if head then
+                  local billboard = Instance.new("BillboardGui")
+                  billboard.Name = "OverheadNametag"
+                  billboard.Size = UDim2.new(0, 180, 0, 40)
+                  billboard.StudsOffset = Vector3.new(0, 2.5, 0)
+                  billboard.AlwaysOnTop = true
 
-              local frame = Instance.new("Frame")
-              frame.Size = UDim2.new(1, 0, 1, 0)
-              frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-              frame.BackgroundTransparency = 0.2
-              frame.Parent = billboard
+                  local frame = Instance.new("Frame")
+                  frame.Size = UDim2.new(1, 0, 1, 0)
+                  frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+                  frame.BackgroundTransparency = 0.2
+                  frame.Parent = billboard
 
-              -- Smooth UI Corners
-              local uiCorner = Instance.new("UICorner")
-              uiCorner.CornerRadius = UDim.new(0, 10)
-              uiCorner.Parent = frame
+                  -- Smooth UI Corners
+                  local uiCorner = Instance.new("UICorner")
+                  uiCorner.CornerRadius = UDim.new(0, 10)
+                  uiCorner.Parent = frame
 
-              -- Bright Red Outline
-              local uiStroke = Instance.new("UIStroke")
-              uiStroke.Thickness = 1.5
-              uiStroke.Color = Color3.fromRGB(255, 0, 0)
-              uiStroke.Parent = frame
+                  -- Bright Red Outline
+                  local uiStroke = Instance.new("UIStroke")
+                  uiStroke.Thickness = 1.5
+                  uiStroke.Color = Color3.fromRGB(255, 0, 0)
+                  uiStroke.Parent = frame
 
-              -- DisplayName Text Configuration
-              local textLabel = Instance.new("TextLabel")
-              textLabel.Size = UDim2.new(1, 0, 1, 0)
-              textLabel.BackgroundTransparency = 1
-              textLabel.Text = player.DisplayName
-              textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-              textLabel.Font = Enum.Font.GothamBold
-              textLabel.TextSize = 14
-              textLabel.Parent = frame
+                  -- DisplayName Text Configuration
+                  local textLabel = Instance.new("TextLabel")
+                  textLabel.Size = UDim2.new(1, 0, 1, 0)
+                  textLabel.BackgroundTransparency = 1
+                  textLabel.Text = player.DisplayName
+                  textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+                  textLabel.Font = Enum.Font.GothamBold
+                  textLabel.TextSize = 14
+                  textLabel.Parent = frame
 
-              billboard.Parent = head
-           end
-        end
+                  billboard.Parent = head
+               end
+            end
 
-        if player.Character then 
-           task.spawn(onCharacterAdded, player.Character) 
-        end
-        EventConnections[player] = player.CharacterAdded:Connect(onCharacterAdded)
-     end
+            if player.Character then 
+               task.spawn(onCharacterAdded, player.Character) 
+            end
+            EventConnections[player] = player.CharacterAdded:Connect(onCharacterAdded)
+         end
 
-     -- Initialize ESP for current lobby
-     for _, player in ipairs(Players:GetPlayers()) do 
-        startESP(player) 
-     end
-     
-     -- Listen for players joining and leaving
-     EventConnections["PlayerAdded"] = Players.PlayerAdded:Connect(startESP)
-     EventConnections["PlayerRemoving"] = Players.PlayerRemoving:Connect(function(player)
-        if HighlightFolder and HighlightFolder:FindFirstChild(player.Name) then 
-           HighlightFolder[player.Name]:Destroy() 
-        end
-        if EventConnections[player] then 
-           EventConnections[player]:Disconnect() 
-           EventConnections[player] = nil 
-        end
-     end)
-  else
-     -- ==================== TOGGLE OFF ====================
-     -- Clean up event loops
-     for key, connection in pairs(EventConnections) do 
-        if connection then connection:Disconnect() end
-     end
-     EventConnections = {}
+         -- Initialize ESP for current lobby
+         for _, player in ipairs(Players:GetPlayers()) do 
+            startESP(player) 
+         end
+         
+         -- Listen for players joining and leaving
+         EventConnections["PlayerAdded"] = Players.PlayerAdded:Connect(startESP)
+         EventConnections["PlayerRemoving"] = Players.PlayerRemoving:Connect(function(player)
+            if HighlightFolder and HighlightFolder:FindFirstChild(player.Name) then 
+               HighlightFolder[player.Name]:Destroy() 
+            end
+            if EventConnections[player] then 
+               EventConnections[player]:Disconnect() 
+               EventConnections[player] = nil 
+            end
+         end)
+      else
+         -- ==================== TOGGLE OFF ====================
+         -- Clean up event loops
+         for key, connection in pairs(EventConnections) do 
+            if connection then connection:Disconnect() end
+         end
+         EventConnections = {}
 
-     -- Remove Visual Folders
-     if HighlightFolder then 
-        HighlightFolder:Destroy() 
-        HighlightFolder = nil 
-     end
+         -- Remove Visual Folders
+         if HighlightFolder then 
+            HighlightFolder:Destroy() 
+            HighlightFolder = nil 
+         end
 
-     -- Strip all nametags from players currently alive
-     for _, player in ipairs(Players:GetPlayers()) do
-        if player.Character and player.Character:FindFirstChild("Head") then
-           local tag = player.Character.Head:FindFirstChild("OverheadNametag")
-           if tag then 
-              tag:Destroy() 
-           end
-        end
-     end
-  end
-
-end,
+         -- Strip all nametags from players currently alive
+         for _, player in ipairs(Players:GetPlayers()) do
+            if player.Character and player.Character:FindFirstChild("Head") then
+               local tag = player.Character.Head:FindFirstChild("OverheadNametag")
+               if tag then 
+                  tag:Destroy() 
+               end
+            end
+         end
+      end
+   end,
 })
 Tab:CreateToggle({
    Name = "Enable Fly GUI",
