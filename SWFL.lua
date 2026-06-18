@@ -228,9 +228,11 @@ Tab:CreateToggle({
    Name = "2D Box Team-ESP",
    CurrentValue = false,
    Flag = "2DTeamEspToggle",
-   Callback = function(Value)
-      if Value then
+   Callback = function(State) -- FIXED: Changed 'Value' to 'State' to strictly follow the UI configuration
+      if State then
          -- ==================== TOGGLE ON ====================
+         if ESPFolder then ESPFolder:Destroy() end -- Sanity check cleanup
+         
          ESPFolder = Instance.new("ScreenGui")
          ESPFolder.Name = "Rayfield_2D_ESP"
          ESPFolder.ResetOnSpawn = false
