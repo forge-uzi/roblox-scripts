@@ -1,22 +1,13 @@
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local kyri = loadstring(game:HttpGet("https://kyrilib.dev/kyrilib/"))()
 
-local Window = Rayfield:CreateWindow({
-   Name = "SWFL SCRIPT",
-   Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
-   LoadingTitle = "SWFL SCRIPT",
-   LoadingSubtitle = "by Sxrfwr",
-   ShowText = "SWFL SCRIPT", -- for mobile users to unhide Rayfield, change if you'd like
-   Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
-
-   ToggleUIKeybind = "K", -- The keybind to toggle the UI visibility (string like "K" or Enum.KeyCode)
-
-   DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false, -- Prevents Rayfield from emitting warnings when the script has a version mismatch with the interface.
-
+local w = kyri.new("SWFL Script", {
+    GameName = "MyGaSWFLme",
+    AutoLoad = "default"
 })
 
-local Tab = Window:CreateTab("Player", "rewind")
-local VehicleTab = Window:CreateTab("Vehicles", 4483362458)
+local playerTab = w:tab("Player", "user")
+local visualsTab = w:tab("Visuals", "eye")
+local vehicleTab = w:tab("Vehicles", "car")
 
 local TargetWalkSpeed = 16
 local TargetJumpPower = 50
@@ -58,41 +49,18 @@ game:GetService("UserInputService").JumpRequest:Connect(function()
     end
 end)
 
--- UI Controls Configuration
-local WalkSpeedSlider = Tab:CreateSlider({
-    Name = "WalkSpeed",
-    Range = {16, 500},
-    Increment = 1,
-    Suffix = "Studs",
-    CurrentValue = 16,
-    Flag = "WalkSpeedFlag",
-    Callback = function(Value)
-        TargetWalkSpeed = Value
-    end,
-})
 
-local JumpPowerSlider = Tab:CreateSlider({
-    Name = "JumpPower",
-    Range = {50, 500},
-    Increment = 1,
-    Suffix = "Power",
-    CurrentValue = 50,
-    Flag = "JumpPowerFlag",
-    Callback = function(Value)
-        TargetJumpPower = Value
-    end,
-})
+playerTab:slider("WalkSpeed", 16, 500, 16, function(Value)
+    TargetWalkSpeed = Value
+end, "WalkSpeedFlag")
 
-local InfiniteJumpToggle = Tab:CreateToggle({
-    Name = "Infinite Jump",
-    CurrentValue = false,
-    Flag = "InfJumpFlag",
-    Callback = function(Value)
-        InfiniteJumpEnabled = Value
-    end,
-})
+playerTab:slider("JumpPower", 50, 500, 50, function(Value)
+    TargetJumpPower = Value
+end, "JumpPowerFlag")
 
-
+playerTab:toggle("Infinite Jump", false, function(Value)
+    InfiniteJumpEnabled = Value
+end, "InfJumpFlag")
 
 -- Global storage for managing ESP states across toggles
 local Players = game:GetService("Players")
@@ -223,13 +191,8 @@ local function createESP(player)
     player.CharacterAdded:Connect(onCharacterAdded)
 end
 
--- Rayfield Toggle Integration
-Tab:CreateToggle({
-   Name = "2D Box Team-ESP",
-   CurrentValue = false,
-   Flag = "2DTeamEspToggle",
-   Callback = function(State) -- FIXED: Changed 'Value' to 'State' to strictly follow the UI configuration
-      if State then
+visualsTab:toggle("2D Team ESP", false, function(State)
+    if State then
          -- ==================== TOGGLE ON ====================
          if ESPFolder then ESPFolder:Destroy() end -- Sanity check cleanup
          
@@ -305,14 +268,10 @@ Tab:CreateToggle({
          if ESPFolder then ESPFolder:Destroy() ESPFolder = nil end
          ActiveESP = {}
       end
-   end,
-})
-Tab:CreateToggle({
-   Name = "Enable Fly GUI",
-   CurrentValue = false,
-   Flag = "FlyToggle",
-   Callback = function(Value)
-      if Value then
+end, "ESP")
+
+playerTab:toggle("Fly GUI", false, function(Value)
+ if Value then
          -- ==================== TOGGLE ON: CREATE & START FLY GUI ====================
          local main = Instance.new("ScreenGui")
          local Frame = Instance.new("Frame")
@@ -735,146 +694,35 @@ Tab:CreateToggle({
             currentMainGui = nil
          end
       end
-   end,
-})
+end, "thing")
 
-
-local noclipConnection = nil
-local noclipGuiObject = nil
-
-Tab:CreateToggle({
-   Name = "Enable Noclip Tool",
-   CurrentValue = false,
-   Flag = "NoclipMasterToggle",
-   Callback = function(Value)
-      if Value then
-         -- ==================== TOGGLE ON: SPAWN SCRIPT ====================
-         local player = game.Players.LocalPlayer
-         local RunService = game:GetService("RunService")
-         
-         -- Clean up any old instance before starting
-         pcall(function() if noclipGuiObject then noclipGuiObject:Destroy() end end)
-
-         -- Create GUI (aminos29T Design)
-         local gui = Instance.new("ScreenGui")
-         gui.Name = "NoclipGui"
-         gui.ResetOnSpawn = false
-         gui.Parent = game:GetService("CoreGui") -- Using CoreGui for persistence
-         noclipGuiObject = gui
-
-         local frame = Instance.new("Frame", gui)
-         frame.Size = UDim2.new(0, 200, 0, 100)
-         frame.Position = UDim2.new(0, 20, 0, 120) -- Moved down so it doesn't block Rayfield
-         frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-         frame.BackgroundTransparency = 0.3
-         frame.BorderSizePixel = 0
-         frame.Active = true
-
-         local title = Instance.new("TextLabel", frame)
-         title.Size = UDim2.new(1, 0, 0, 30)
-         title.Text = "by aminos29T"
-         title.TextColor3 = Color3.fromRGB(255, 255, 255)
-         title.BackgroundTransparency = 1
-         title.Font = Enum.Font.SourceSansBold
-         title.TextSize = 20
-
-         local label = Instance.new("TextLabel", frame)
-         label.Size = UDim2.new(1, 0, 0, 20)
-         label.Position = UDim2.new(0, 0, 0, 30)
-         label.Text = "noclip"
-         label.TextColor3 = Color3.fromRGB(200, 200, 205)
-         label.BackgroundTransparency = 1
-         label.Font = Enum.Font.SourceSans
-         label.TextSize = 18
-
-         local button = Instance.new("TextButton", frame)
-         button.Size = UDim2.new(0.8, 0, 0, 30)
-         button.Position = UDim2.new(0.1, 0, 0, 60)
-         button.Text = "Attiva Noclip"
-         button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-         button.TextColor3 = Color3.fromRGB(255, 255, 255)
-         button.Font = Enum.Font.SourceSans
-         button.TextSize = 16
-
-         -- Logic inside the spawned GUI
-         local isNoclipping = false
-         
-         button.MouseButton1Click:Connect(function()
-            isNoclipping = not isNoclipping
-            button.Text = isNoclipping and "Disattiva Noclip" or "Attiva Noclip"
-            
-            if isNoclipping then
-               noclipConnection = RunService.Stepped:Connect(function()
-                  if player.Character then
-                     for _, part in pairs(player.Character:GetDescendants()) do
-                        if part:IsA("BasePart") and part.CanCollide then
-                           part.CanCollide = false
-                        end
-                     end
-                  end
-               end)
-            else
-               if noclipConnection then noclipConnection:Disconnect() end
-               -- Restore collision
-               if player.Character then
-                  for _, part in pairs(player.Character:GetDescendants()) do
-                     if part:IsA("BasePart") then
-                        part.CanCollide = true
-                     end
-                  end
-               end
+playerTab:toggle("Noclip Through Walls", false, function(Value)
+    if Value then
+        local player = game.Players.LocalPlayer
+        noclipConnection = RunService.Stepped:Connect(function()
+            if player.Character then
+                for _, part in ipairs(player.Character:GetDescendants()) do
+                    if part:IsA("BasePart") and part.CanCollide then
+                        part.CanCollide = false
+                    end
+                end
             end
-         end)
-
-         -- Mobile/PC Drag System
-         local UIS = game:GetService("UserInputService")
-         local dragging, dragInput, dragStart, startPos
-         frame.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-               dragging = true; dragStart = input.Position; startPos = frame.Position
-               input.Changed:Connect(function()
-                  if input.UserInputState == Enum.UserInputState.End then dragging = false end
-               end)
-            end
-         end)
-         frame.InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-               dragInput = input
-            end
-         end)
-         UIS.InputChanged:Connect(function(input)
-            if input == dragInput and dragging then
-               local delta = input.Position - dragStart
-               frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-            end
-         end)
-
-      else
-         -- ==================== TOGGLE OFF: CLEANUP ====================
-         -- 1. Stop the Noclip loop
-         if noclipConnection then
+        end)
+    else
+        if noclipConnection then
             noclipConnection:Disconnect()
             noclipConnection = nil
-         end
-
-         -- 2. Restore character collision
-         local player = game.Players.LocalPlayer
-         if player.Character then
-            for _, part in pairs(player.Character:GetDescendants()) do
-               if part:IsA("BasePart") then
-                  part.CanCollide = true
-               end
+        end
+        local player = game.Players.LocalPlayer
+        if player.Character then
+            for _, part in ipairs(player.Character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = true
+                end
             end
-         end
-
-         -- 3. Destroy the GUI
-         if noclipGuiObject then
-            noclipGuiObject:Destroy()
-            noclipGuiObject = nil
-         end
-      end
-   end,
-})
+        end
+    end
+end, "NoclipMasterToggle")
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -997,15 +845,37 @@ task.spawn(function()
         end
     end
 end)
-
-task.spawn(function()
-    while task.wait() do
-        if velocityEnabled and UserInputService:IsKeyDown(qbEnabledKeyCode) and not UserInputService:GetFocusedTextBox() then
-            local Character = LocalPlayer.Character
-            local Humanoid = Character and Character:FindFirstChildWhichIsA("Humanoid")
-            local SeatPart = Humanoid and Humanoid.SeatPart
-            if SeatPart and SeatPart:IsA("VehicleSeat") then
-                SeatPart.AssemblyLinearVelocity *= Vector3.new(1 - velocityMult2, 1, 1 - velocityMult2)
+RunService.RenderStepped:Connect(function(dt)
+    if not velocityEnabled or UserInputService:GetFocusedTextBox() then return end
+    
+    local Character = LocalPlayer.Character
+    local Humanoid = Character and Character:FindFirstChildWhichIsA("Humanoid")
+    local SeatPart = Humanoid and Humanoid.SeatPart
+    
+    if SeatPart and SeatPart:IsA("VehicleSeat") then
+        -- We work with the magnitude of the velocity to apply consistent braking
+        local currentVel = SeatPart.AssemblyLinearVelocity
+        local speed = currentVel.Magnitude
+        
+        -- Acceleration
+        if UserInputService:IsKeyDown(velocityEnabledKeyCode) then
+            -- Multiply by 'dt' to make acceleration smooth and frame-rate independent
+            local accel = currentVel.Unit * (velocityMult * 5000 * dt)
+            SeatPart.AssemblyLinearVelocity += accel
+        end
+        
+        -- Deceleration (Brake)
+        if UserInputService:IsKeyDown(qbEnabledKeyCode) then
+            if speed > 0.1 then -- Only apply brake if the car is actually moving
+                -- Subtracting a constant force per second creates a smooth stop
+                local brakeForce = currentVel.Unit * (velocityMult2 * 5000 * dt)
+                
+                -- Ensure we don't go into reverse by braking too hard
+                if brakeForce.Magnitude > currentVel.Magnitude then
+                    SeatPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                else
+                    SeatPart.AssemblyLinearVelocity -= brakeForce
+                end
             end
         end
     end
@@ -1023,159 +893,97 @@ UserInputService.InputBegan:Connect(function(input, processed)
         end
     end
 end)
+---------------------------------------------------------------------
+-- VEHICLES TAB (Standard Format)
+---------------------------------------------------------------------
 
--- Rayfield Vehicle UI Construction
-VehicleTab:CreateToggle({Name = "Keybinds Active", CurrentValue = true, Flag = "velEn", Callback = function(v) velocityEnabled = v end})
-VehicleTab:CreateToggle({Name = "Flight Enabled", CurrentValue = false, Flag = "fltEn", Callback = function(v) flightEnabled = v end})
-VehicleTab:CreateSlider({Name = "Flight Speed", Range = {0, 800}, Increment = 10, CurrentValue = 100, Flag = "fltSpd", Callback = function(v) flightSpeed = v/100 end})
-VehicleTab:CreateSlider({Name = "Accel Mult (Thousandths)", Range = {0, 50}, Increment = 1, CurrentValue = 25, Flag = "velMult", Callback = function(v) velocityMult = v/1000 end})
-VehicleTab:CreateKeybind({Name = "Accel Key", CurrentKeybind = "W", Flag = "velKey", Callback = function(k) velocityEnabledKeyCode = Enum.KeyCode[k] end})
-VehicleTab:CreateSlider({Name = "Brake Force", Range = {0, 300}, Increment = 5, CurrentValue = 150, Flag = "velMult2", Callback = function(v) velocityMult2 = v/1000 end})
-VehicleTab:CreateKeybind({Name = "Brake Key", CurrentKeybind = "S", Flag = "qbKey", Callback = function(k) qbEnabledKeyCode = Enum.KeyCode[k] end})
-VehicleTab:CreateKeybind({Name = "Stop Key", CurrentKeybind = "P", Flag = "stopKey", Callback = function(k) stopKeyCode = Enum.KeyCode[k] end})
--- Ride Height Slider (Slammed vs Lifted)
-VehicleTab:CreateSlider({
-    Name = "Car Height (Stance)",
-    Range = {1, 5},
-    Increment = 0.1,
-    CurrentValue = 2.5,
-    Flag = "CarHeightFlag",
-    Callback = function(Value)
-        TuneSuspension("FreeLength", Value)
-    end,
-})
+vehicleTab:toggle("Keybinds Active", true, function(v) velocityEnabled = v end, "velEn")
+vehicleTab:toggle("Flight Enabled", false, function(v) flightEnabled = v end, "fltEn")
 
--- Stiffness Slider (Prevents bottoming out)
-VehicleTab:CreateSlider({
-    Name = "Suspension Stiffness",
-    Range = {1000, 500000},
-    Increment = 500,
-    CurrentValue = 15000,
-    Flag = "SuspensionStiffFlag",
-    Callback = function(Value)
-        TuneSuspension("Stiffness", Value)
-    end,
-})
+vehicleTab:slider("Flight Speed", 0, 800, 100, function(v) flightSpeed = v/100 end, "fltSpd")
+vehicleTab:slider("Accel Mult (Thousandths)", 0, 50, 25, function(v) velocityMult = v/1000 end, "velMult")
+vehicleTab:keybind("Accel Key", "W", function(k) velocityEnabledKeyCode = Enum.KeyCode[k] end, "velKey")
 
+vehicleTab:slider("Brake Force", 0, 300, 150, function(v) velocityMult2 = v/1000 end, "velMult2")
+vehicleTab:keybind("Brake Key", "S", function(k) qbEnabledKeyCode = Enum.KeyCode[k] end, "qbKey")
+vehicleTab:keybind("Stop Key", "P", function(k) stopKeyCode = Enum.KeyCode[k] end, "stopKey")
+
+vehicleTab:slider("Car Height (Stance)", 1, 5, 2.5, function(Value)
+    TuneSuspension("FreeLength", Value)
+end, "CarHeightFlag")
+
+vehicleTab:slider("Suspension Stiffness", 1000, 500000, 15000, function(Value)
+    TuneSuspension("Stiffness", Value)
+end, "SuspensionStiffFlag")
+
+
+
+-- Define the locations table
 local Locations = {
-    ["Car Dealership"] = Vector3.new(8963.7138671875, 26.060230255126953, 3099.975341796875), -- Replace with actual SWFL coordinates
+    ["Car Dealership"] = Vector3.new(8963.7138671875, 26.060230255126953, 3099.975341796875),
     ["Starblocks"] = Vector3.new(9518.466796875, 24.1849365234375, -4124.6904296875),
     ["Police Station"] = Vector3.new(5867.7529296875, 24.184932708740234, 610.9223022460938),
     ["Spawn"] = Vector3.new(-2449.219970703125, 25.059921264648438, -271.57598876953125),
     ["Sussys Mechanic"] = Vector3.new(9190.560546875, 24.182689666748047, -1318.718505859375)
 }
 
+-- Create list of names for the dropdown
 local LocationNames = {}
 for name, _ in pairs(Locations) do
     table.insert(LocationNames, name)
 end
 
-Tab:CreateDropdown({
-    Name = "Teleport to Location",
-    Options = LocationNames,
-    CurrentOption = "",
-    MultipleOptions = false,
-    Flag = "TeleportDropdown",
-    Callback = function(Option)
-        local targetPos = Locations[Option[1]]
+-- Add the dropdown to your playerTab
+playerTab:dropdown("Teleport to Location", LocationNames, "Spawn", function(val)
+    local targetPos = Locations[val]
+    if targetPos then
+        -- Notify the user
+        w:notify("Teleport", "Going to " .. val, 2)
+        
+        -- Perform the teleport
         local player = game.Players.LocalPlayer
-        if player and player.Character and targetPos then
+        if player and player.Character then
             player.Character:MoveTo(targetPos)
         end
-    end,
-})
+    end
+end, "TeleportDropdownFlag")
 
-local function GetPlayerNames()
+-- 1. Teleport to Player
+local function GetPlayerList()
     local names = {}
-    for _, p in pairs(game.Players:GetPlayers()) do
-        if p ~= game.Players.LocalPlayer then
-            table.insert(names, p.Name)
+    for _, player in pairs(game.Players:GetPlayers()) do
+        if player ~= game.Players.LocalPlayer then
+            table.insert(names, player.Name)
         end
     end
     return names
 end
 
-local PlayerDropdown = Tab:CreateDropdown({
-    Name = "Teleport to Player",
-    Options = GetPlayerNames(),
-    CurrentOption = "",
-    MultipleOptions = false,
-    Flag = "PlayerTPDropdown",
-    Callback = function(Option)
-        local targetPlayer = game.Players:FindFirstChild(Option[1])
+-- We pass the result of GetPlayerList() (which is a table) to the dropdown
+playerTab:dropdown("Teleport to Player", GetPlayerList(), "None", function(val)
+    local targetPlayer = game.Players:FindFirstChild(val)
+    if targetPlayer and targetPlayer.Character then
+        game.Players.LocalPlayer.Character:PivotTo(targetPlayer.Character:GetPivot())
+    end
+end, "PlayerTPDropdown")
+
+-- 2. Spectate Player
+local function GetSpectateList()
+    local names = {"LocalPlayer"} -- Start with local
+    for _, player in pairs(game.Players:GetPlayers()) do
+        table.insert(names, player.Name)
+    end
+    return names
+end
+
+playerTab:dropdown("Spectate Player Camera", GetSpectateList(), "LocalPlayer", function(val)
+    local camera = workspace.CurrentCamera
+    if val == "LocalPlayer" then
+        camera.CameraSubject = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+    else
+        local targetPlayer = game.Players:FindFirstChild(val)
         if targetPlayer and targetPlayer.Character then
-            local targetPivot = targetPlayer.Character:GetPivot()
-            game.Players.LocalPlayer.Character:PivotTo(targetPivot)
-        end
-    end,
-})
-
--- Auto-refresh the player list when someone joins or leaves
-game.Players.PlayerAdded:Connect(function() PlayerDropdown:Refresh(GetPlayerNames(), true) end)
-game.Players.PlayerRemoving:Connect(function() PlayerDropdown:Refresh(GetPlayerNames(), true) end)
-
-local FullbrightEnabled = false
-local Lighting = game:GetService("Lighting")
-
--- Save the game's original lighting defaults
-local origBrightness = Lighting.Brightness
-local origClockTime = Lighting.ClockTime
-local origFogEnd = Lighting.FogEnd
-
-Tab:CreateToggle({
-    Name = "Fullbright / Clear Vision",
-    CurrentValue = false,
-    Flag = "FullbrightFlag",
-    Callback = function(Value)
-        FullbrightEnabled = Value
-    end,
-})
-
-task.spawn(function()
-    while task.wait(1) do
-        if FullbrightEnabled then
-            Lighting.Brightness = 2
-            Lighting.ClockTime = 14 -- Forces local time to 2:00 PM
-            Lighting.FogEnd = 100000
-            Lighting.GlobalShadows = false
-        else
-            Lighting.GlobalShadows = true
+            camera.CameraSubject = targetPlayer.Character:FindFirstChildOfClass("Humanoid")
         end
     end
-end)
-
-local function GetPlayerNames()
-    local names = {"LocalPlayer"}
-    for _, p in pairs(game.Players:GetPlayers()) do
-        if p ~= game.Players.LocalPlayer then
-            table.insert(names, p.Name)
-        end
-    end
-    return names
-end
-
-local SpectateDropdown = Tab:CreateDropdown({
-    Name = "Spectate Player Camera",
-    Options = GetPlayerNames(),
-    CurrentOption = "LocalPlayer",
-    MultipleOptions = false,
-    Flag = "SpectateDropdownFlag",
-    Callback = function(Option)
-        local targetName = Option[1]
-        local camera = workspace.CurrentCamera
-        
-        if targetName == "LocalPlayer" or not targetName then
-            camera.CameraSubject = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-        else
-            local targetPlayer = game.Players:FindFirstChild(targetName)
-            if targetPlayer and targetPlayer.Character then
-                local humanoid = targetPlayer.Character:FindFirstChildOfClass("Humanoid")
-                if humanoid then
-                    camera.CameraSubject = humanoid
-                end
-            end
-        end
-    end,
-})
-
-
+end, "SpectateDropdownFlag")
