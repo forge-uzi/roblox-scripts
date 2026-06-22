@@ -6,6 +6,8 @@ local w = kyri.new("SWFL Script", {
 })
 
 local playerTab = w:tab("Player", "user")
+local tpTab = w:tab("Teleports", "navigation")
+local playertpTab = w:tab("Player Teleports", "map-pin-plus")
 local visualsTab = w:tab("Visuals", "eye")
 local vehicleTab = w:tab("Vehicles", "car")
 
@@ -16,6 +18,186 @@ local Players = game:GetService("Players")
 local CoreGui = game:GetService("CoreGui")
 local EventConnections = {}
 local HighlightFolder = nil
+
+ tpTab:button("Spawn", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(-2449.22, 23.64, -271.58)
+ end)
+
+tpTab:button("Apartment Concierge", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(-2467.64, 23.14, -7743.05)
+ end)
+
+ tpTab:button("Automart", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(9128.51, 23.14, -938.86)
+ end)
+
+  tpTab:button("Bubmart", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(8712.13, 23.14, -577.37)
+ end)
+
+   tpTab:button("CVC Pharmacy", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(9503.51, 23.14, -829.25)
+ end)
+
+    tpTab:button("Starblocks", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(9519.83, 23.14, -4128.88)
+ end)
+
+ tpTab:button("Dealership", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(8963.71, 25.02, 3099.98)
+ end)
+
+  tpTab:button("Dippin Donuts", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(9569.47, 23.14, 717.91)
+ end)
+
+ tpTab:button("FL Fitness", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(10103.58, 23.14, 1257.14)
+ end)
+
+ tpTab:button("Fintech", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(8727.02, 23.14, -2816.53)
+ end)
+
+ tpTab:button("FireFighter", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(7068.08, 22.52, 197.49)
+ end)
+
+
+tpTab:button("LHS Hospital", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(9136.37, 23.14, -4635.51)
+ end)
+
+ 
+tpTab:button("Jeffs Pizza", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(8536.60, 23.14, -579.31)
+ end)
+
+ tpTab:button("McBloxxers", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(9566.47, 23.14, 1206.91)
+ end)
+
+
+ tpTab:button("Mirage", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(8766.56, 23.03, 997.21)
+ end)
+
+ tpTab:button("Parademic", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(9061.39, 23.14, -4759.16)
+ end)
+
+  tpTab:button("Police", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(5867.75, 23.14, 616.92)
+ end)
+
+ tpTab:button("Bank", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(6373.00, 23.77, 77.25)
+ end)
+
+  tpTab:button("Seaside Bar And Grill", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(-1801.46, 22.69, -7579.19)
+ end)
+
+  tpTab:button("Speed Kart", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(5860.51, 23.27, 3921.14)
+ end)
+
+ 
+  tpTab:button("Studrac", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(3337.68, 23.14, -291.89)
+ end)
+
+
+ tpTab:button("Sunset Performance", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(6878.23, 23.14, -90.09)
+ end)
+
+ tpTab:button("Sussys Mechanic", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(9190.56, 23.14, -1318.72)
+ end)
+
+ tpTab:button("Vorzen", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(8939.00, 23.14, -339.25)
+ end)
+
+  tpTab:button("Waterpark", function() 
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+rootPart.CFrame = CFrame.new(4280.51, 23.02, 3682.01)
+ end)
 
 -- Persistent Loop to force values against anti-cheats
 task.spawn(function()
@@ -918,35 +1100,6 @@ end, "SuspensionStiffFlag")
 
 
 
--- Define the locations table
-local Locations = {
-    ["Car Dealership"] = Vector3.new(8963.7138671875, 26.060230255126953, 3099.975341796875),
-    ["Starblocks"] = Vector3.new(9518.466796875, 24.1849365234375, -4124.6904296875),
-    ["Police Station"] = Vector3.new(5867.7529296875, 24.184932708740234, 610.9223022460938),
-    ["Spawn"] = Vector3.new(-2449.219970703125, 25.059921264648438, -271.57598876953125),
-    ["Sussys Mechanic"] = Vector3.new(9190.560546875, 24.182689666748047, -1318.718505859375)
-}
-
--- Create list of names for the dropdown
-local LocationNames = {}
-for name, _ in pairs(Locations) do
-    table.insert(LocationNames, name)
-end
-
--- Add the dropdown to your playerTab
-playerTab:dropdown("Teleport to Location", LocationNames, "Spawn", function(val)
-    local targetPos = Locations[val]
-    if targetPos then
-        -- Notify the user
-        w:notify("Teleport", "Going to " .. val, 2)
-        
-        -- Perform the teleport
-        local player = game.Players.LocalPlayer
-        if player and player.Character then
-            player.Character:MoveTo(targetPos)
-        end
-    end
-end, "TeleportDropdownFlag")
 
 -- 1. Teleport to Player
 local function GetPlayerList()
@@ -960,7 +1113,7 @@ local function GetPlayerList()
 end
 
 -- We pass the result of GetPlayerList() (which is a table) to the dropdown
-playerTab:dropdown("Teleport to Player", GetPlayerList(), "None", function(val)
+playertpTab:dropdown("Teleport to Player", GetPlayerList(), "None", function(val)
     local targetPlayer = game.Players:FindFirstChild(val)
     if targetPlayer and targetPlayer.Character then
         game.Players.LocalPlayer.Character:PivotTo(targetPlayer.Character:GetPivot())
