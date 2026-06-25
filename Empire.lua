@@ -84,7 +84,7 @@ end, "follower_toggle")
 
 -- 2. Create the Player Dropdown
 -- Update your dropdown to look like this:
-local playerDropdown = main:dropdown("Select Target", getPlayerNames(), "None", function(val)
+local playerDropdown = autofarm:dropdown("Select Target", getPlayerNames(), "None", function(val)
     if val == "None" or val == nil then
         targetPlayerName = "None"
     else
