@@ -32,16 +32,18 @@ local followConnection = nil
 local isFollowerEnabled = false -- Tracks toggle state
 
 -- Helper function to get an updated list of player names
+-- Helper function to generate Display Name (@Username) formatting
 local function getPlayerNames()
     local names = {"None"}
     for _, p in ipairs(Players:GetPlayers()) do
         if p ~= localPlayer then
-            table.insert(names, p.Name)
+            -- Format: DisplayName (@RealUsername)
+            local formattedName = p.DisplayName .. " (@" .. p.Name .. ")"
+            table.insert(names, formattedName)
         end
     end
     return names
 end
-
 -- Function to manage the actual tracking loop state
 local function updateFollower()
     -- Clean up any existing connection first
@@ -81,12 +83,19 @@ autofarm:toggle("Enable Auto Bounty", false, function(state)
 end, "follower_toggle")
 
 -- 2. Create the Player Dropdown
-local playerDropdown = autofarm:dropdown("Select Target", getPlayerNames(), "None", function(val)
-    targetPlayerName = val
-    w:notify("Bounty Target", "Set to: " .. val, 2)
+-- Update your dropdown to look like this:
+local playerDropdown = main:dropdown("Select Target", getPlayerNames(), "None", function(val)
+    if val == "None" or val == nil then
+        targetPlayerName = "None"
+    else
+        -- Extracts the exact text hidden inside the (@...)
+        local username = val:match("@([%w_]+)")
+        targetPlayerName = username or "None"
+    end
+    
+    w:notify("Follower Target", "Set to: " .. targetPlayerName, 2)
     updateFollower()
 end, "player_follower_dropdown")
-
 -- 3. Background thread to keep player options refreshed every 5 seconds
 task.spawn(function()
     while true do
