@@ -117,6 +117,9 @@ end)
 
 -- Assumes Players and Workspace services are defined at the top of your script
 
+-- Assumes Players and Workspace services are defined at the top of your script
+_G.LastTeleportedATM = nil -- Tracks the last ATM you visited to prevent repeating
+
 autofarm:button("TP to Random ATM", function()
     local Workspace = game:GetService("Workspace")
     local Players = game:GetService("Players")
@@ -135,7 +138,10 @@ autofarm:button("TP to Random ATM", function()
             if spawner.Name == "CriminalATMSpawner" then
                 local atm = spawner:FindFirstChild("CriminalATM")
                 if atm and atm:GetAttribute("State") == "Normal" then
-                    table.insert(validATMs, atm)
+                    -- Only add it if it wasn't the last one we visited
+                    if atm ~= _G.LastTeleportedATM then
+                        table.insert(validATMs, atm)
+                    end
                 end
             end
         end
@@ -145,8 +151,7 @@ autofarm:button("TP to Random ATM", function()
     local waterSpawner = Workspace.Game.Jobs:FindFirstChild("CriminalATMSpawnerWater")
     if waterSpawner then
         local waterAtm = waterSpawner:FindFirstChild("CriminalATMWater")
-        -- Checks if the water ATM exists and evaluates its state if it uses attributes
-        if waterAtm then
+        if waterAtm and waterAtm ~= _G.LastTeleportedATM then
             local state = waterAtm:GetAttribute("State")
             if state == nil or state == "Normal" then
                 table.insert(validATMs, waterAtm)
@@ -154,14 +159,27 @@ autofarm:button("TP to Random ATM", function()
         end
     end
 
-    -- 3. Check if any valid ATMs were found in either location
+    -- Fallback: If only 1 total ATM is active on the map, allow repeating it so the script doesn't break
+    if #validATMs == 0 and _G.LastTeleportedATM ~= nil then
+        -- Re-check if the last ATM is still valid/Normal
+        local lastATM = _G.LastTeleportedATM
+        local state = lastATM:GetAttribute("State")
+        if (state == nil or state == "Normal") and lastATM.Parent then
+            table.insert(validATMs, lastATM)
+        end
+    end
+
+    -- 3. Check if any valid ATMs are active
     if #validATMs == 0 then
-        w:notify("Teleport Error", "No normal or water ATMs are active right now!", 2)
+        w:notify("Teleport Error", "No alternative normal or water ATMs are active!", 2)
         return
     end
 
-    -- 4. Pick a completely random ATM from the combined list
+    -- 4. Pick a random ATM from the filtered list
     local randomATM = validATMs[math.random(1, #validATMs)]
+    
+    -- Update our tracker variable to remember this choice for next time
+    _G.LastTeleportedATM = randomATM
     
     -- 5. Safely locate the physical part of the selected ATM
     local atmPart = nil
@@ -175,7 +193,7 @@ autofarm:button("TP to Random ATM", function()
     if atmPart then
         rootPart.CFrame = atmPart.CFrame + Vector3.new(0, 3, 0)
         rootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0) -- Stops physics momentum fling
-        w:notify("Teleport Success", "Teleported to a random ATM!", 2)
+        w:notify("Teleport Success", "Teleported to a new random ATM!", 2)
     else
         w:notify("Teleport Error", "Could not resolve ATM physical position.", 2)
     end
