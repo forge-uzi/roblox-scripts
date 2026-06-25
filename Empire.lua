@@ -31,17 +31,17 @@ local targetPlayerName = "None"
 local followConnection = nil
 local isFollowerEnabled = false -- Tracks toggle state
 
--- 1. DEFINE THE FUNCTION FIRST (So the dropdown can read it)
+-- Helper function to get an updated list of player names
 local function getPlayerNames()
     local names = {"None"}
     for _, p in ipairs(Players:GetPlayers()) do
-        if p ~= Players.LocalPlayer then
-            local formattedName = p.DisplayName .. " (@" .. p.Name .. ")"
-            table.insert(names, formattedName)
+        if p ~= localPlayer then
+            table.insert(names, p.Name)
         end
     end
     return names
 end
+
 -- Function to manage the actual tracking loop state
 local function updateFollower()
     -- Clean up any existing connection first
@@ -80,24 +80,18 @@ autofarm:toggle("Enable Auto Bounty", false, function(state)
     updateFollower()
 end, "follower_toggle")
 
--- 3. CREATE THE DROPDOWN USING THE TAB VARIABLE
+-- 2. Create the Player Dropdown
 local playerDropdown = autofarm:dropdown("Select Target", getPlayerNames(), "None", function(val)
-    if val == "None" or val == nil then
-        targetPlayerName = "None"
-    else
-        local username = val:match("@([%w_]+)")
-        targetPlayerName = username or "None"
-    end
-    
-    w:notify("Follower Target", "Set to: " .. targetPlayerName, 2)
+    targetPlayerName = val
+    w:notify("Bounty Target", "Set to: " .. val, 2)
     updateFollower()
 end, "player_follower_dropdown")
 
--- 4. BACKGROUND REFRESH THREAD
+-- 3. Background thread to keep player options refreshed every 5 seconds
 task.spawn(function()
     while true do
         task.wait(5)
-        if playerDropdown and playerDropdown.set then
+        if playerDropdown and typeof(playerDropdown.set) == "function" then
             playerDropdown:set(getPlayerNames())
         end
     end
