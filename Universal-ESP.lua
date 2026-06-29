@@ -152,36 +152,7 @@ visuals:AddToggle('Health', {
     end
 })
 
-visuals:AddToggle('Chams', {
-    Text = 'Chams ESP',
-    Default = false, -- Default value (true / false)
-    Tooltip = 'Shows Highlighted Players', -- Information shown when you hover over the toggle
 
-    Callback = function(Value)
-    Chams_Active = Value
-        refreshAll()
-    end
-})
-
-
-
-
-visuals:AddLabel('ESP Color'):AddColorPicker('ESP Color', {
-    Default = Color3.fromRGB(0, 255, 0), -- Bright green
-    Title = 'Choose ESP Color', -- Optional. Allows you to have a custom color picker title (when you open it)
-    Transparency = 0, -- Optional. Enables transparency changing for this color picker (leave as nil to disable)
-
-    Callback = function(Value)
-        ESP.Color = Value 
-    end
-})
-
--- Connections for new players/respawns
-Players.PlayerAdded:Connect(function(player)
-    player.CharacterAdded:Connect(function()
-        updatePlayerESP(player)
-    end)
-end)
 -- Global variables
 getgenv().HitboxEnabled = false
 getgenv().HitboxVisible = false
