@@ -119,7 +119,7 @@ end
 -- 1. Master Switch
 combat:AddToggle('MasterSwitch', {
     Text = 'Enable Hitbox System',
-    Default = true,
+    Default = false,
     Callback = function(Value)
         getgenv().Enabled = Value
         if not Value then
