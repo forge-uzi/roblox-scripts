@@ -90,3 +90,16 @@ visual:AddToggle('chams', {
        updateHighlights(highlightsEnabled)
     end
 })
+
+
+
+visual:AddLabel('Chams Color'):AddColorPicker('ChamsColor', {
+    Default = Color3.new(0, 1, 0), -- Bright green
+    Title = 'Chams Color', -- Optional. Allows you to have a custom color picker title (when you open it)
+    Transparency = 0, -- Optional. Enables transparency changing for this color picker (leave as nil to disable)
+
+    Callback = function(Value)
+        print('[cb] Color changed!', Value)
+    end
+})
+
