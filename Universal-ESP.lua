@@ -162,27 +162,9 @@ visuals:AddToggle('Chams', {
         refreshAll()
     end
 })
-visuals:AddLabel('Chams Color Settings')
 
--- 2. Add the ColorPicker to the Groupbox directly
-visuals:AddColorPicker('ChamsColor', {
-    Default = Color3.new(0, 1, 0),
-    Title = 'Chams Color',
-    Transparency = 0,
 
-    Callback = function(Value)
-        for _, player in pairs(Players:GetPlayers()) do
-            if player.Character then
-                local hl = player.Character:FindFirstChild("ESP_Highlight")
-                if hl then
-                    hl.FillColor = Value
-                    -- Use the picker's transparency property directly
-                    hl.FillTransparency = Options.ChamsColor.Transparency
-                end
-            end
-        end
-    end
-})
+
 
 -- Repeat the same logic for the ESP Color
 visuals:AddLabel('ESP Color Settings')
