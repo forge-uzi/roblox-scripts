@@ -34,7 +34,49 @@ local visuals = Tabs.Main:AddLeftGroupbox('Visuals')
 local Combat = Tabs.Main:AddRightGroupbox('Combat')
 
 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 
+-- Logic Variables
+local ESP_Active = false
+local Chams_Active = false
+
+-- Function to handle highlight creation/removal
+local function updatePlayerESP(player)
+    if not player.Character then return end
+    
+    local existingHighlight = player.Character:FindFirstChild("ESP_Highlight")
+    
+    -- Only show if Master is ON and Chams is ON
+    if ESP_Active and Chams_Active and player ~= LocalPlayer then
+        if not existingHighlight then
+            local highlight = Instance.new("Highlight")
+            highlight.Name = "ESP_Highlight"
+            highlight.Parent = player.Character
+            highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+            highlight.FillTransparency = 0.5
+            highlight.OutlineTransparency = 0
+            
+            -- Apply initial color from picker
+            highlight.FillColor = Options.ChamsColor.Value
+            highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+        else
+            -- Update color if it already exists (useful when changing color in real-time)
+            existingHighlight.FillColor = Options.ChamsColor.Value
+        end
+    else
+        if existingHighlight then
+            existingHighlight:Destroy()
+        end
+    end
+end
+
+-- Refresh all players
+local function refreshAll()
+    for _, p in pairs(Players:GetPlayers()) do
+        updatePlayerESP(p)
+    end
+end
 
 
 
@@ -44,6 +86,8 @@ visuals:AddToggle('Master', {
     Tooltip = 'Master Switch', -- Information shown when you hover over the toggle
 
     Callback = function(Value)
+         ESP_Active = Value
+        refreshAll()
       if Value then
     ESP.Enabled = true  
       else
@@ -108,6 +152,31 @@ visuals:AddToggle('Health', {
     end
 })
 
+visuals:AddToggle('Chams', {
+    Text = 'Chams ESP',
+    Default = false, -- Default value (true / false)
+    Tooltip = 'Shows Highlighted Players', -- Information shown when you hover over the toggle
+
+    Callback = function(Value)
+    Chams_Active = Value
+        refreshAll()
+    end
+})
+GroupBox:AddLabel("Chams Color"):AddColorPicker("ChamsColor", {
+    Default = Color3.fromRGB(255, 0, 4), -- Default Red
+    Title = "Chams Color",
+    Callback = function(Value)
+        -- Update existing highlights immediately when color changes
+        for _, player in pairs(Players:GetPlayers()) do
+            if player.Character then
+                local hl = player.Character:FindFirstChild("ESP_Highlight")
+                if hl then hl.FillColor = Value end
+            end
+        end
+    end
+})
+
+
 visuals:AddLabel('ESP Color'):AddColorPicker('ESP Color', {
     Default = Color3.fromRGB(0, 255, 0), -- Bright green
     Title = 'Choose ESP Color', -- Optional. Allows you to have a custom color picker title (when you open it)
@@ -117,6 +186,13 @@ visuals:AddLabel('ESP Color'):AddColorPicker('ESP Color', {
         ESP.Color = Value 
     end
 })
+
+-- Connections for new players/respawns
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        updatePlayerESP(player)
+    end)
+end)
 -- Global variables
 getgenv().HitboxEnabled = false
 getgenv().HitboxVisible = false
