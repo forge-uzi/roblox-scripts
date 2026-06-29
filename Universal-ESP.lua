@@ -162,7 +162,7 @@ visuals:AddToggle('Chams', {
         refreshAll()
     end
 })
-LeftGroupBox:AddLabel('Chams Color'):AddColorPicker('Chams Color', {
+visuals:AddLabel('Chams Color'):AddColorPicker('Chams Color', {
     Default = Color3.new(0, 1, 0), -- Bright green
     Title = 'Chams Color', -- Optional. Allows you to have a custom color picker title (when you open it)
     Transparency = 0, -- Optional. Enables transparency changing for this color picker (leave as nil to disable)
