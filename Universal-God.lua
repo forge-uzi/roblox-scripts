@@ -649,7 +649,7 @@ local RunService = game:GetService("RunService")
 local lp = Players.LocalPlayer
 
 -- Global Settings
-getgenv().Multiplier = 0.5
+getgenv().Multiplier = 0.02
 getgenv().CFrameSpeedEnabled = false
 
 -- 1. CFrame Guns FIX Function
