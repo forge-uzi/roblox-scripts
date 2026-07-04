@@ -688,7 +688,7 @@ players:AddToggle("CFrameSpeedToggle", {
 -- Speed Slider
 players:AddSlider("SpeedSlider", {
     Text = "Speed Multiplier",
-    Default = 0.5,
+    Default = 0.02,
     Min = 0,
     Max = 10,
     Rounding = 2,
