@@ -699,7 +699,7 @@ players:AddSlider("SpeedSlider", {
 
 Library:Notify({
     Title = "Universal God",
-    Description = "God has succesfully loaded!",
+    Description = "God has succesfully loaded, RightCTRL To Close!",
     Time = 10,
 })
 
