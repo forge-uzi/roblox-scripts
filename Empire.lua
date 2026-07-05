@@ -1,6 +1,6 @@
 local kyri = loadstring(game:HttpGet("https://kyrilib.dev/kyrilib/"))()
 
-local w = kyri.new("Driving Empire Script", {
+local w = kyri.new("forge.uzi Driving Empire", {
     GameName = "MyGaSWFLme",
     AutoLoad = "default"
 })
