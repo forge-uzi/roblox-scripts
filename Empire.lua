@@ -25,100 +25,70 @@ end, "fov")
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-
 local localPlayer = Players.LocalPlayer
-local targetPlayer = nil -- Store the actual player object, not just a name
+
+local targetPlayerName = "None"
 local followConnection = nil
 local isFollowerEnabled = false
 
--- Helper function to get an updated list of player names
+-- Helper to find player by name
 local function getPlayerNames()
     local names = {"None"}
     for _, p in ipairs(Players:GetPlayers()) do
         if p ~= localPlayer then
-            -- We keep the format, but we'll map it back to the player object safely
-            local formattedName = p.DisplayName .. " (@" .. p.Name .. ")"
-            table.insert(names, formattedName)
+            table.insert(names, p.DisplayName .. " (@" .. p.Name .. ")")
         end
     end
     return names
 end
 
--- Function to manage the actual tracking loop state
+-- Fixed update logic
 local function updateFollower()
-    -- Clean up any existing connection first
     if followConnection then
         followConnection:Disconnect()
         followConnection = nil
     end
 
-    -- Only track if the toggle is ON and a valid player is chosen
-    if not isFollowerEnabled or not targetPlayer then 
-        return 
-    end
+    if not isFollowerEnabled or targetPlayerName == "None" then return end
 
-    -- Start the tracking loop
     followConnection = RunService.Heartbeat:Connect(function()
-        -- Verify target and local player are still valid and alive
-        if not targetPlayer or not targetPlayer.Character then return end
-        if not localPlayer.Character then return end
+        local targetPlayer = Players:FindFirstChild(targetPlayerName)
+        if not targetPlayer or not targetPlayer.Character or not localPlayer.Character then return end
         
         local myRoot = localPlayer.Character:FindFirstChild("HumanoidRootPart")
         local targetRoot = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
         
         if myRoot and targetRoot then
-            -- Position your avatar slightly behind the target player
-            -- Using a small offset to prevent physics clashing
             myRoot.CFrame = targetRoot.CFrame * CFrame.new(0, 0, 3)
-            
-            -- Optional: Reset velocity to stop sliding momentum
-            myRoot.AssemblyLinearVelocity = Vector3.zero
+            myRoot.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
         end
     end)
 end
 
--- 1. Create the Master Toggle
+-- Create the Toggle
 autofarm:toggle("Enable Auto Bounty", false, function(state)
     isFollowerEnabled = state
     w:notify("Follower", state and "Enabled" or "Disabled", 2)
     updateFollower()
 end, "follower_toggle")
 
--- 2. Create the Player Dropdown
+-- Create the Dropdown
 local playerDropdown = autofarm:dropdown("Select Target", getPlayerNames(), "None", function(val)
-    if val == "None" or val == nil then
-        targetPlayer = nil
+    if val == "None" then
+        targetPlayerName = "None"
     else
-        -- Extract the username from the (@Username) format
+        -- Correctly parse the username from the string "DisplayName (@Username)"
         local username = val:match("@([%w_]+)")
-        
-        -- Find the actual player object safely
-        targetPlayer = Players:FindFirstChild(username)
-        
-        if targetPlayer then
-            w:notify("Follower Target", "Tracking: " .. targetPlayer.Name, 2)
-        else
-            w:notify("Error", "Could not find player object!", 2)
-            targetPlayer = nil
-        end
+        targetPlayerName = username or "None"
     end
     
+    w:notify("Target", "Following: " .. targetPlayerName, 2)
     updateFollower()
 end, "player_follower_dropdown")
 
-print("Type of playerDropdown: " .. typeof(playerDropdown))
-print("Value of playerDropdown: " .. tostring(playerDropdown))
-
--- 3. Background thread to keep player options refreshed every 5 seconds
-task.spawn(function()
-    while true do
-        task.wait(5)
-        if playerDropdown and typeof(playerDropdown.set) == "function" then
-            playerDropdown:set(getPlayerNames())
-        end
-    end
-end)
-
+-- REMOVED THE CRASHING TASK.SPAWN LOOP
+-- Note: Manually refreshing dropdowns is library-specific. 
+-- Unless you know the library command, do not try to run code on the dropdown object.
 -- Assumes Players and Workspace services are defined at the top of your script
 
 -- Assumes Players and Workspace services are defined at the top of your script
