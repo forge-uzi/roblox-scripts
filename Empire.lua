@@ -106,6 +106,9 @@ local playerDropdown = autofarm:dropdown("Select Target", getPlayerNames(), "Non
     updateFollower()
 end, "player_follower_dropdown")
 
+print("Type of playerDropdown: " .. typeof(playerDropdown))
+print("Value of playerDropdown: " .. tostring(playerDropdown))
+
 -- 3. Background thread to keep player options refreshed every 5 seconds
 task.spawn(function()
     while true do
