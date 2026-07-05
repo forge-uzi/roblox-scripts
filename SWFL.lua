@@ -1,6 +1,6 @@
 local kyri = loadstring(game:HttpGet("https://kyrilib.dev/kyrilib/"))()
 
-local w = kyri.new("SWFL Script", {
+local w = kyri.new("forge.uzi-SWFL", {
     GameName = "MyGaSWFLme",
     AutoLoad = "default"
 })
