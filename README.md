@@ -2,3 +2,4 @@ SWFL: loadstring(game:HttpGet("https://raw.githubusercontent.com/exzanloqas-star
 Driving Empire: loadstring(game:HttpGet("https://raw.githubusercontent.com/exzanloqas-star/roblox-scripts/refs/heads/main/Empire.lua"))()
 Universal-God: loadstring(game:HttpGet("https://raw.githubusercontent.com/exzanloqas-star/roblox-scripts/refs/heads/main/Universal-God.lua"))()
 Da Hood: loadstring(game:HttpGet("https://raw.githubusercontent.com/exzanloqas-star/roblox-scripts/refs/heads/main/dahood.lua"))()
+Da Hood macro and hitbox: loadstring(game:HttpGet("https://raw.githubusercontent.com/exzanloqas-star/roblox-scripts/refs/heads/main/macro+hitbox.lua"))()
